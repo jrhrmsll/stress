@@ -18,22 +18,18 @@ type Consumer struct {
 	responses chan<- *Response
 	wg        *sync.WaitGroup
 	logger    *log.Logger
-
-	stop chan struct{}
 }
 
 func NewConsumer(
 	requests <-chan *Request,
 	responses chan<- *Response,
 	wg *sync.WaitGroup,
-	stop chan struct{},
 	logger *log.Logger,
 ) *Consumer {
 	return &Consumer{
 		requests:  requests,
 		responses: responses,
 		wg:        wg,
-		stop:      stop,
 		logger:    logger,
 	}
 }

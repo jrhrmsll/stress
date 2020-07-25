@@ -40,13 +40,12 @@ func main() {
 	producer := internal.NewProducer(throughput, duration, url, requests, logger)
 	app.Add(producer.Execute, producer.Interrupt)
 
-	stop := make(chan struct{})
 	var wg sync.WaitGroup
 
 	for i := 0; i < throughput; i++ {
 		wg.Add(1)
 
-		consumer := internal.NewConsumer(requests, responses, &wg, stop, logger)
+		consumer := internal.NewConsumer(requests, responses, &wg, logger)
 		app.Add(consumer.Execute, consumer.Interrupt)
 	}
 
