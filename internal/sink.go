@@ -3,6 +3,7 @@ package internal
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/codahale/hdrhistogram"
@@ -50,7 +51,15 @@ func (s *Sink) Execute() error {
 		hist.RecordCorrectedValue(response.Latency.Milliseconds(), s.interval.Milliseconds())
 	}
 
-	fmt.Println(hist.CumulativeDistribution())
+	percentiles := []string{"50", "75", "95", "99", "99.9", "99.95", "99.99"}
+	fmt.Println("Response times percentiles:")
+
+	for _, p := range percentiles {
+		v, _ := strconv.ParseFloat(p, 64)
+		fmt.Printf("%6sth: %6dms\n", p, hist.ValueAtQuantile(v))
+	}
+
+	fmt.Println()
 
 	return nil
 }
