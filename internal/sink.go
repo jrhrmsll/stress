@@ -52,11 +52,11 @@ func (s *Sink) Execute() error {
 	}
 
 	percentiles := []string{"50", "75", "95", "99", "99.9", "99.95", "99.99"}
-	fmt.Println("Response times percentiles:")
+	fmt.Println(" Response times percentiles:")
 
 	for _, p := range percentiles {
 		v, _ := strconv.ParseFloat(p, 64)
-		fmt.Printf("%6sth: %6dms\n", p, hist.ValueAtQuantile(v))
+		fmt.Printf("%9sth: %6dms\n", p, hist.ValueAtQuantile(v))
 	}
 
 	fmt.Println()

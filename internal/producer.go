@@ -7,10 +7,10 @@ import (
 )
 
 const header = `
-URL:        %s
-Throughput: %d request/s
-Interval:   %s
-Requests:   %d
+        URL: %s
+ Throughput: %d request/s
+   Interval: %s
+   Requests: %d
 
 `
 
