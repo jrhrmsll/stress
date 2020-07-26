@@ -55,7 +55,7 @@ e.g.
 9,3
 ```
 
-Those results can be analyzed with other tools or alternative HdrHistogram implementations.
+These results can be analyzed with other tools or alternative HdrHistogram implementations.
 
 ## References
 [1] https://bravenewgeek.com/everything-you-know-about-latency-is-wrong/
