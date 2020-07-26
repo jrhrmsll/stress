@@ -1,32 +1,37 @@
-package internal
+package pipeline
 
 import (
 	"log"
 	"net/http"
 	"sync"
 	"time"
+
+	"stress/internal"
+	"stress/internal/config"
 )
 
 const (
 	HeaderContentType   = "Content-Type"
 	MIMEApplicationJSON = "application/json"
-	httpClientTimeout   = "30s"
 )
 
 type Consumer struct {
-	requests  <-chan *Request
-	responses chan<- *Response
+	cfg       *config.Config
+	requests  <-chan *internal.Request
+	responses chan<- *internal.Response
 	wg        *sync.WaitGroup
 	logger    *log.Logger
 }
 
 func NewConsumer(
-	requests <-chan *Request,
-	responses chan<- *Response,
+	cfg *config.Config,
+	requests <-chan *internal.Request,
+	responses chan<- *internal.Response,
 	wg *sync.WaitGroup,
 	logger *log.Logger,
 ) *Consumer {
 	return &Consumer{
+		cfg:       cfg,
 		requests:  requests,
 		responses: responses,
 		wg:        wg,
@@ -36,7 +41,7 @@ func NewConsumer(
 
 func (c *Consumer) Execute() error {
 	for request := range c.requests {
-		response, err := execute(request)
+		response, err := c.execute(request)
 		if err != nil {
 			c.logger.Println(err)
 		}
@@ -51,10 +56,10 @@ func (c *Consumer) Execute() error {
 
 func (c *Consumer) Interrupt(err error) {}
 
-func execute(request *Request) (*Response, error) {
+func (c *Consumer) execute(request *internal.Request) (*internal.Response, error) {
 	start := time.Now().UTC()
 
-	timeout, err := time.ParseDuration(httpClientTimeout)
+	timeout, err := time.ParseDuration(c.cfg.Timeout())
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +77,7 @@ func execute(request *Request) (*Response, error) {
 
 	resp, err := httpClient.Do(req)
 
-	response := &Response{
+	response := &internal.Response{
 		Number: request.Number,
 		Start:  start,
 		End:    time.Now().UTC(),

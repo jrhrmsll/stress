@@ -11,20 +11,27 @@ import (
 	"github.com/oklog/run"
 
 	"stress/internal"
-)
-
-var (
-	throughput int
-	duration   string
-	url        string
+	"stress/internal/config"
+	"stress/internal/pipeline"
+	"stress/internal/processor"
 )
 
 func main() {
-	flag.IntVar(&throughput, "t", 1, "Throughput (requests per second).")
-	flag.StringVar(&duration, "d", "60s", "Test duration.")
-	flag.StringVar(&url, "u", "http://localhost/", "URL of the system under test.")
+	var (
+		throughput int
+		duration   string
+		timeout    string
+		url        string
+	)
+
+	flag.IntVar(&throughput, "throughput", 1, "Throughput (requests per second).")
+	flag.StringVar(&duration, "duration", "60s", "Test duration.")
+	flag.StringVar(&timeout, "timeout", "30s", "Request timeout.")
+	flag.StringVar(&url, "url", "http://localhost/", "URL of the system under test.")
 
 	flag.Parse()
+
+	cfg := config.NewConfig(throughput, duration, timeout, url)
 
 	ctx := context.Background()
 
@@ -37,19 +44,25 @@ func main() {
 	requests := make(chan *internal.Request, throughput)
 	responses := make(chan *internal.Response, throughput)
 
-	producer := internal.NewProducer(throughput, duration, url, requests, logger)
+	producer := pipeline.NewProducer(cfg, requests, logger)
 	app.Add(producer.Execute, producer.Interrupt)
 
 	var wg sync.WaitGroup
-
 	for i := 0; i < throughput; i++ {
 		wg.Add(1)
 
-		consumer := internal.NewConsumer(requests, responses, &wg, logger)
+		consumer := pipeline.NewConsumer(cfg, requests, responses, &wg, logger)
 		app.Add(consumer.Execute, consumer.Interrupt)
 	}
 
-	sink := internal.NewSink(throughput, duration, url, responses, logger)
+	processors := make([]processor.ResultsProcessor, 0)
+	processors = append(
+		processors,
+		processor.NewHdrHistDump(cfg, os.Stdout),
+		processor.NewCSVFileDump(cfg, logger),
+	)
+
+	sink := pipeline.NewSink(cfg, responses, processors, logger)
 	app.Add(sink.Execute, sink.Interrupt)
 
 	go func() {
