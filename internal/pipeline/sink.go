@@ -41,8 +41,8 @@ func (s *Sink) Execute() error {
 		s.times[response.Latency.Milliseconds()]++
 	}
 
-	for _, processor := range s.processors {
-		if err := processor.Process(s.times); err != nil {
+	for _, p := range s.processors {
+		if err := p.Process(s.times); err != nil {
 			s.logger.Println(err)
 		}
 	}
