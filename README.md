@@ -4,12 +4,12 @@ stress is a little load generator program written in Go, with a "constant throug
 
 ## Installation
 ````
-docker build -t stress .
+go get github.com/jrhrmsll/stress
 ````
 
 ## Options
 ```
-docker run -it stress -h
+stress -h
 Usage of stress:
   -duration string
     	Test duration. (default "60s")
@@ -21,19 +21,21 @@ Usage of stress:
     	URL of the system under test. (default "http://localhost/")
 ```
 
-e.g.
+If the [Bookmarks Service](https://github.com/jrhrmsll/bkd) is running, the following will
+launch 10 request per second during 5s.
+
 ```
-go run main.go -throughput 10 -duration 1s -u http://localhost:8080/bookmarks
+stress -throughput 10 -duration 5s -url http://localhost:8080/bookmarks
 
         URL: http://localhost:8080/bookmarks
  Throughput: 10 request/s
    Interval: 100ms
     Timeout: 30s
-   Requests: 10
+   Requests: 50
 
  Response times percentiles:
        50th:      7ms
-       75th:      9ms
+       75th:      8ms
        95th:     10ms
        99th:     10ms
      99.9th:     10ms
@@ -47,12 +49,14 @@ followed by latencies values and their occurrences.
 
 e.g.
 ```
-10,1s,30s,http://localhost:8080/bookmarks,100,10
-8,1
-7,1
-10,1
-6,4
-9,3
+10,5s,30s,http://localhost:8080/bookmarks,100,50
+6,9
+9,1
+5,3
+4,1
+10,3
+7,23
+8,10
 ```
 
 These results can be analyzed with other tools or alternative HdrHistogram implementations.
