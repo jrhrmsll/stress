@@ -5,7 +5,8 @@ import (
 	"log"
 	"os"
 	"strconv"
-	"stress/internal/config"
+
+	"github.com/jrhrmsll/stress/internal/config"
 )
 
 const filename = "results.csv"

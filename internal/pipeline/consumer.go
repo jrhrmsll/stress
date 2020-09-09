@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"stress/internal"
-	"stress/internal/config"
+	"github.com/jrhrmsll/stress/internal"
+	"github.com/jrhrmsll/stress/internal/config"
 )
 
 const (

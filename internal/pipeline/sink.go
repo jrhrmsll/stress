@@ -3,9 +3,9 @@ package pipeline
 import (
 	"log"
 
-	"stress/internal"
-	"stress/internal/config"
-	"stress/internal/processor"
+	"github.com/jrhrmsll/stress/internal"
+	"github.com/jrhrmsll/stress/internal/config"
+	"github.com/jrhrmsll/stress/internal/processor"
 )
 
 type Sink struct {

@@ -1,4 +1,4 @@
-module stress
+module github.com/jrhrmsll/stress
 
 go 1.14
 

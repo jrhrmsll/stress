@@ -7,7 +7,7 @@ import (
 
 	"github.com/codahale/hdrhistogram"
 
-	"stress/internal/config"
+	"github.com/jrhrmsll/stress/internal/config"
 )
 
 type HdrHistDump struct {

@@ -10,10 +10,10 @@ import (
 
 	"github.com/oklog/run"
 
-	"stress/internal"
-	"stress/internal/config"
-	"stress/internal/pipeline"
-	"stress/internal/processor"
+	"github.com/jrhrmsll/stress/internal"
+	"github.com/jrhrmsll/stress/internal/config"
+	"github.com/jrhrmsll/stress/internal/pipeline"
+	"github.com/jrhrmsll/stress/internal/processor"
 )
 
 func main() {
