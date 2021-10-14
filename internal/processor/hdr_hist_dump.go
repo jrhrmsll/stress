@@ -5,26 +5,21 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/codahale/hdrhistogram"
+	"github.com/HdrHistogram/hdrhistogram-go"
 
 	"github.com/jrhrmsll/stress/internal/config"
 )
 
 type HdrHistDump struct {
-	cfg    *config.Config
-	writer io.Writer
-
+	cfg       *config.Config
+	writer    io.Writer
 	histogram *hdrhistogram.Histogram
 }
 
-func NewHdrHistDump(
-	cfg *config.Config,
-	writer io.Writer,
-) *HdrHistDump {
+func NewHdrHistDump(cfg *config.Config, writer io.Writer) *HdrHistDump {
 	return &HdrHistDump{
-		cfg:    cfg,
-		writer: writer,
-
+		cfg:       cfg,
+		writer:    writer,
 		histogram: hdrhistogram.New(0, 1000000, 3),
 	}
 }
